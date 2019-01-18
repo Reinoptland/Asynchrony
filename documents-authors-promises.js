@@ -9,12 +9,11 @@ const authors = {
 }
 
 function getDocument(documentId) {
-    // when do we want this promise to resolve X
-    // what do we want to resolve this promise with
-
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         function loadComplete() {
-            // callback(documents[documentId])
+            if(documents[documentId] === undefined){
+                return reject('404 document not found')
+            }
             resolve(documents[documentId])
         }
     
@@ -23,15 +22,19 @@ function getDocument(documentId) {
     })    
 }
 
-function getAuthor(authorId, callback) {
-    function loadComplete() {
-        callback(authors[authorId])
-    }
-    
-    setTimeout(loadComplete, 100)
+function getAuthor(authorId) {
+    return new Promise((resolve, reject) => {
+        function loadComplete() {
+            resolve(authors[authorId])
+        }
+        
+        setTimeout(loadComplete, 100)
+    })
 }
 
-getDocument(1)
+getDocument(99)
     .then(document => {
-        console.log(document)
+        return getAuthor(document.authorId)   
     })
+    .then(author => console.log(author))
+    .catch(error => console.log(error))
