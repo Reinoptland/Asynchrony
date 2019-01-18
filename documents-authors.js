@@ -12,6 +12,7 @@ function getDocument(documentId, callback) {
     function loadComplete() {
         callback(documents[documentId])
     }
+
     setTimeout(loadComplete, 2000)
 }
 
