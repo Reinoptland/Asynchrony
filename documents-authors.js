@@ -19,10 +19,14 @@ function getAuthor(authorId, callback) {
     function loadComplete() {
         callback(authors[authorId])
     }
+    
     setTimeout(loadComplete, 100)
 }
 
 getDocument(2, (document) => {
-    console.log(document.authorId)
-    // use getAuthor with authorId to 
+    console.log(document)
+    getAuthor(document.authorId, (author) => {
+        console.log(author.name.toUpperCase())
+    })
 })
+
