@@ -38,3 +38,43 @@ getDocument(99)
     })
     .then(author => console.log(author))
     .catch(error => console.log(error))
+
+async function search(documentId){
+    try {
+        const document = await getDocument(documentId)
+        const author = await getAuthor(document.authorId)
+        console.log(author)
+    } catch(error) {
+        console.log(error)
+    }
+
+}
+
+search(1)
+
+// function getDocument(documentId, callback) {
+//     function loadComplete() {
+//         callback(documents[documentId])
+//     }
+
+//     setTimeout(loadComplete, 2000)
+// }
+
+// function getAuthor(authorId, callback) {
+//     function loadComplete() {
+//         callback(authors[authorId])
+//     }
+    
+//     setTimeout(loadComplete, 100)
+// }
+
+// function search(documentId){
+//     return new Promise((resolve,reject) => {
+//         getDocument(documentId, resolve)
+//     })
+// }
+
+// search(1)
+//     .then(document => console.log(document))
+
+
