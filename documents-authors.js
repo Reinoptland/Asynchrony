@@ -30,3 +30,7 @@ getDocument(2, (document) => {
     })
 })
 
+getDocument(2) // undefined.then()
+    .then(document => console.log(document))
+
+
