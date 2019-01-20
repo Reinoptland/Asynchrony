@@ -1,44 +1,58 @@
-// WIP .. needs more love
-
 const board = [
     [null, 'x', 'x'],
     ['o', 'o', null],
-    ['o', 'x', 'x']
+    ['x', 'x', 'x']
 ]
 
-// function rowWinner(row){
-//     if(row)
-// }
+const isWinningLine = (line) => line[0] !== null && new Set(line).size === 1
 
-function isSymbol(symbol, compareToSymbol) {
-    return symbol === compareToSymbol;
+const calculateWinner = (board) => {
+    const rows = board.map(row => [...row])
+    const { columns, diagonals } = transposeToColumnsAndDiagonals(board)
+    const lines = [ ...rows, ...columns, ...diagonals]
+    const winningLine = lines.find(isWinningLine)
+
+    if(winningLine) return winningLine[0]
+    return null
 }
-  
-function calculateWinner(board, symbol){
-    const oWinnerRow = board.map(row => row.every(value => isSymbol(value, symbol)))
-    const oWinnerColumn = [
-        board.map(row => row[0]), 
-        board.map(row => row[1]), 
-        board.map(row => row[2])
-    ].map(row => row.every(value => isSymbol(value, symbol)))
-    const oWinnerDiagonal1 = board.map((row, index) => {
-        return row[index]
-    })
 
-    const oWinnerDiagonal2 = board.map((row, index, array) => {
-        return row[(array.length - 1) - index]
-    })
 
-    const oWinnerDiagonal = (oWinnerDiagonal1.every(value => isSymbol(value, symbol))) 
-        || oWinnerDiagonal2.every(value => isSymbol(value, symbol))
-    console.log(oWinnerDiagonal)
+function transposeToColumnsAndDiagonals(board) {
+    return board.reduce((boardAcc, row, rowIndex, board) => {
+        // Since we're going over all symbols we might as well do columns, diagonals at once
+        let { columns, diagonals } = row.reduce((rowAcc, symbol, index) => {
+            // convert rows to columns
+            const columns = [ ...rowAcc.columns ]
+            columns[index] = columns[index].concat(symbol)
 
-    if(oWinnerRow.includes(true) || oWinnerColumn.includes(true) || oWinnerDiagonal){
-        console.log(`${symbol} has won! All hail ${symbol}!`)
-        return symbol
+            // Check if the current symbol is part of either diagonal
+            // If so, add them to a diagonal array
+            let diagonals = [...rowAcc.diagonals]
+            if (rowIndex === index) {
+                diagonals[0] = diagonals[0].concat(symbol)
+            }
+
+            if (index === (board.length - 1) - rowIndex) {
+                diagonals[1] = diagonals[1].concat(symbol)
+            }
+
+            return { columns, diagonals};
+        }, { columns: [...boardAcc.columns], diagonals: [...boardAcc.diagonals]});
+
+        return {
+            columns,
+            diagonals
+        };
+    }, { columns: new Array(board.length).fill([]), diagonals: [[], []] });
+}
+
+const displayWinner = () => {
+    const winner = calculateWinner(board)
+    if(winner !== null) {
+        return console.log(`${winner} is the winner all hail ${winner.toUpperCase()}!!`)
     }
+
+    console.log('Nobody has won (yet)')
 }
 
-calculateWinner(board, 'o')
-calculateWinner(board, 'x')
-
+displayWinner()
