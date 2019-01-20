@@ -4,7 +4,7 @@ const board = [
     ['x', 'x', 'x']
 ]
 
-const isWinningLine = (line) => line[0] !== null && new Set(line).size === 1
+const isWinningLine = line => line[0] !== null && new Set(line).size === 1
 
 const calculateWinner = (board) => {
     const rows = board.map(row => [...row])
